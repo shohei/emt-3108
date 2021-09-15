@@ -1,2 +1,2 @@
-neural_network/nn2_neural_network/dataset/*
-!neural_network/nn2_neural_network/dataset/mnist.py
+dataset/*
+!dataset/mnist.py
