@@ -2,20 +2,7 @@ from mpl_toolkits import mplot3d
 import numpy as np
 from ex07_partial_diff import function_2
 import matplotlib.pyplot as plt
-import pdb
-
-def numerical_gradient(f, x):
-    h = 1e-4 # 0.0001
-    grad = np.zeros_like(x)
-    for idx in range(x.size):
-        tmp_val = x[idx]
-        x[idx] = tmp_val + h 
-        fxh1 = f(x)
-        x[idx] = tmp_val - h 
-        fxh2 = f(x)
-        grad[idx] = (fxh1 - fxh2) / (2*h) 
-        x[idx] = tmp_val 
-    return grad
+from ex08_gradient import numerical_gradient
 
 if __name__=="__main__":
     x1 = np.linspace(-2,2,20)

@@ -9,5 +9,6 @@ def func1(x0):
 def func2(x1):
     return 3.0**2.0 + x1*x1
 
-print(numerical_diff(func1, 3.0)) # 6.00000000000378
-print(numerical_diff(func2, 4.0)) # 7.999999999999119
+if __name__=="__main__":
+    print(numerical_diff(func1, 3.0)) # 6.00000000000378
+    print(numerical_diff(func2, 4.0)) # 7.999999999999119
