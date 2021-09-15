@@ -1,11 +1,10 @@
 import sys, os
 sys.path.append(os.path.abspath('../'))
-from nn2_neural_network.ex12_softmax import softmax
 from nn2_neural_network.ex04_sigmoid import sigmoid
+from nn2_neural_network.ex13_softmax_improved import softmax
 from ex04_cross_entropy_error_minibatch import cross_entropy_error
 from ex08_gradient import numerical_gradient
 import numpy as np
-import pdb
 
 class TwoLayerNet:
     def __init__(self, input_size, hidden_size, output_size, weight_init_std=0.01):
