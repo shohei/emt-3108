@@ -1,6 +1,6 @@
 # coding: utf-8
 import sys, os
-sys.path.append(os.pardir)
+sys.path.append(os.path.abspath("../../"))
 import numpy as np
 import pickle
 from dataset.mnist import load_mnist
