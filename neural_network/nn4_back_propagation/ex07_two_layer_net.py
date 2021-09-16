@@ -6,6 +6,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../")
 sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../../")))
 from nn3_training_nn.ex08_gradient import numerical_gradient 
 from collections import OrderedDict
+from ex05_affine_layer import Affine
+from ex03_relu_layer import Relu
+from ex06_softmax_with_loss_layer import SoftmaxWithLoss
 
 class TwoLayerNet:
 
