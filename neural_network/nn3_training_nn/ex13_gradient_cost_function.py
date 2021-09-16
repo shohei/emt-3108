@@ -1,5 +1,7 @@
 import sys, os
-sys.path.append(os.path.abspath("../"))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../../")))
 import numpy as np
 from nn2_neural_network.ex12_softmax import softmax
 from ex04_cross_entropy_error_minibatch import cross_entropy_error

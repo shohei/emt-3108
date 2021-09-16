@@ -1,4 +1,8 @@
 import numpy as np
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../../")))
 
 X = np.array([1.0, 0.5])
 W1 = np.array([[0.1, 0.3, 0.5], 

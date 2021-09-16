@@ -1,4 +1,8 @@
 import numpy as np
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../../")))
 
 def cross_entropy_error_one_hot_encoding(y, t):
     if y.ndim == 1:

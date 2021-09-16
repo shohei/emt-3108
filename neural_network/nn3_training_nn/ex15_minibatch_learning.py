@@ -1,6 +1,7 @@
-import numpy as np
 import sys, os
-sys.path.append(os.path.abspath("../../"))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../../")))
 import numpy as np
 from dataset.mnist import load_mnist
 from ex14_two_layer_net import TwoLayerNet

@@ -1,6 +1,9 @@
 import numpy as np
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../../")))
 from ex08_gradient import numerical_gradient
-import pdb
 
 def gradient_descent(f, init_x, lr=0.01, step_num=100):
     x  = init_x.copy()

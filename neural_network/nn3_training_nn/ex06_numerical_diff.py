@@ -1,5 +1,9 @@
 import numpy as np
 import matplotlib.pylab as plt
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../../")))
 
 def numerical_diff(f, x):
     h = 1e-4 # 0.0001

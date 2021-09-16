@@ -1,8 +1,9 @@
 # coding: utf-8
 import numpy as np
 import os, sys
-sys.path.append(os.pardir)
-# sys.path.append(os.path.abspath("../"))
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../../")))
 from nn3_training_nn.ex08_gradient import numerical_gradient 
 from collections import OrderedDict
 

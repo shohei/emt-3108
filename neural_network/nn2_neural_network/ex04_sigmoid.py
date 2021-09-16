@@ -1,4 +1,8 @@
 import numpy as np
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../../")))
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))

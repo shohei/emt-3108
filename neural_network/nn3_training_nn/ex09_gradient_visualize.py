@@ -1,5 +1,9 @@
 from mpl_toolkits import mplot3d
 import numpy as np
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../../")))
 from ex07_partial_diff import function_2
 import matplotlib.pyplot as plt
 from ex08_gradient import numerical_gradient
