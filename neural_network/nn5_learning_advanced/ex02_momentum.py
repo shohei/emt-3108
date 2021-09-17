@@ -5,12 +5,19 @@ sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../..
 import numpy as np
 import matplotlib.pyplot as plt
 
-class SGD:
-    def __init__(self, lr=0.01):
+class Momentum:
+    def __init__(self, lr=0.01, momentum=0.9):
         self.lr = lr
+        self.momentum = momentum
+        self.v = None
     def update(self, params, grads):
+        if self.v is None:
+            self.v = {}
+            for key, val in params.items():
+                self.v[key] = np.zeros_like(val)
         for key in params.keys():
-            params[key] -= self.lr * grads[key]
+            self.v[key] = self.momentum*self.v[key] - self.lr*grads[key]
+            params[key] += self.v[key]
 
 def f(x,y):
     return x**2 /20.0 + y**2
@@ -49,7 +56,7 @@ if __name__=="__main__":
     plt.figure(2)
     plot_contour(2,1,1,X,Y,Z)
 
-    optimizer = SGD(lr=0.95)
+    optimizer = Momentum(lr=0.1)
     x_history = []
     y_history = []
     params['x'], params['y'] = init_pos[0], init_pos[1]
