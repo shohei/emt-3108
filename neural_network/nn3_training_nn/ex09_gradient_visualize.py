@@ -14,7 +14,7 @@ if __name__=="__main__":
     grads = [[[]]*len(x1)]*len(x2)
     plt.figure(1)
     X, Y = np.meshgrid(x1, x2)
-    Z = X**2+Y**2
+    Z = function_2([X,Y])
     ax = plt.axes(projection='3d')
     ax.plot_surface(X,Y,Z,cmap='viridis', edgecolor='none')
 
