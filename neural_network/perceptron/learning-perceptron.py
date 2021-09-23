@@ -17,14 +17,12 @@ class Perceptron():
 
 p = Perceptron()
 
-truth_table = [(0,0,0),(0,1,0),(1,0,0),(1,1,1)] #AND
+# truth_table = [(0,0,0),(0,1,0),(1,0,0),(1,1,1)] #AND
 # truth_table = [(0,0,0),(0,1,1),(1,0,1),(1,1,1)] #OR
-# truth_table = [(0,0,1),(0,1,1),(1,0,1),(1,1,0)] #NAND
+truth_table = [(0,0,1),(0,1,1),(1,0,1),(1,1,0)] #NAND
 epsilon = 1e-5
 max_error = 1000
-dtheta = 0.1
-dw1 = 0.1
-dw2 = 0.1
+alpha = 0.1
 while max_error>epsilon:
     errors = []
     for t in truth_table:
@@ -32,19 +30,10 @@ while max_error>epsilon:
         x2 = t[1]
         r = t[2]
         y = p.forward(x1,x2)
+        p.w1 = p.w1 + alpha*(r-y)*x1
+        p.w2 = p.w2 + alpha*(r-y)*x2
+        p.theta = p.theta - alpha*(r-y)
         error = abs(y-r)
-        if y==0 and r==1:
-            p.theta -= dtheta 
-            if x1==1:
-                p.w1 += dw1
-            if x2==1:
-                p.w2 += dw2
-        if y==1 and r==0:
-            p.theta += dtheta 
-            if x1==1:
-                p.w1 -= dw1
-            if x2==1:
-                p.w2 -= dw2
         errors.append(error)
     print("errors",errors)
     max_error = max(errors) 
