@@ -5,6 +5,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.abspath(__file__),"../../..
 import numpy as np
 from dataset.mnist import load_mnist
 from PIL import Image
+import pdb
+import matplotlib.pyplot as plt
 
 def img_show(img):
     pil_img = Image.fromarray(np.uint8(img))
