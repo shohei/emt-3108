@@ -1,45 +1,75 @@
-import array
+from deap import base, creator, tools, algorithms
+import numpy as np
 import random
-import json
+import math
 
-import numpy
+from scipy.spatial import distance
 
-from deap import algorithms
-from deap import base
-from deap import creator
-from deap import tools
-import pdb
+# ANIMATE = False
+ANIMATE = True 
 
-# gr*.json contains the distance map in list of list style in JSON format
-# Optimal solutions are : gr17 = 2085, gr24 = 1272, gr120 = 6942
-with open("tsp/gr17.json", "r") as tsp_data:
-    tsp = json.load(tsp_data)
+if ANIMATE:
+    NUM_CITIES  = 20 
+    NGEN = 200
+else:
+    NUM_CITIES  = 6 
+    NGEN = 100
 
-distance_map = tsp["DistanceMatrix"]
-IND_SIZE = tsp["TourSize"]
+RANGE = 1000
 
-creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
-creator.create("Individual", array.array, typecode='i', fitness=creator.FitnessMin)
+def generate_cities( n ):
+    return list((RANGE/2*math.cos(i*math.pi*2/n)+RANGE/2,RANGE/2*math.sin(i*math.pi*2/n)+RANGE/2)for i in range( n))
+
+creator.create("Fitness", base.Fitness, weights=(-1.0,))
+creator.create("Individual", list, fitness=creator.Fitness)
 
 toolbox = base.Toolbox()
-
-# Attribute generator
-toolbox.register("indices", random.sample, range(IND_SIZE), IND_SIZE)
-
-# Structure initializers
-toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.indices)
+toolbox.register("attribute", np.random.permutation, NUM_CITIES)
+toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.attribute)
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
-def evalTSP(individual):
-    distance = distance_map[individual[-1]][individual[0]]
-    for gene1, gene2 in zip(individual[0:-1], individual[1:]):
-        distance += distance_map[gene1][gene2]
-    return distance,
+def evalSalesman( individual ):
+    td = 0
+    for k in range(len(individual)+1):
+        i = individual[k-2]
+        j = individual[k-1]
+        d = distance.euclidean(list(cities)[i],list(cities)[j])
+        td +=d
+    return ( td, )
 
-toolbox.register("mate", tools.cxPartialyMatched)
-toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.05)
+toolbox.register("evaluate", evalSalesman)
+toolbox.register( "mate", tools.cxOrdered )
+toolbox.register( "mutate", tools.mutShuffleIndexes, indpb=0.05 )
 toolbox.register("select", tools.selTournament, tournsize=3)
-toolbox.register("evaluate", evalTSP)
+
+def generate_px_py_pn(ind):
+    d = 0
+    px, py, pn = [], [], []
+    for i in range(NUM_CITIES+1):
+        n1 = ind[i-2]
+        n2 = ind[i-1]
+        d += distance.euclidean(list(cities)[n1], list(cities)[n2])
+        # print("%s, %s, %s" % (n1, list(cities)[n1][0], list(cities)[n1][1]))
+        px += [list(cities)[n1][0]]
+        py += [list(cities)[n1][1]]
+        pn += [n1]
+        plt.annotate(n1, xy=(list(cities)[n1][0], list(cities)[n1][1]),fontsize=18)
+        plt.annotate('', xy=(list(cities)[n1][0], list(cities)[n1][1]),xytext=(list(cities)[n2][0], list(cities)[n2][1]),
+                     arrowprops=dict(arrowstyle='-|>', connectionstyle='arc3',facecolor='gray', edgecolor='gray'))
+    return px, py, pn
+
+
+import matplotlib.pyplot as plt 
+def plot_route(gen,ind):
+    plt.subplots(figsize=(6, 6))
+    plt.xlim(0, RANGE)
+    plt.ylim(0, RANGE)
+    plt.grid(True)
+    plt.text(0, 0, 'iter={}'.format(gen), fontsize=12)
+    lines, = plt.plot(0, 0, marker='o', color='k', markersize=3, linestyle='None')
+    px, py, pn = generate_px_py_pn(ind)
+    lines.set_data(px, py)
+    plt.pause(0.01)
 
 def varAnd(population, toolbox, cxpb, mutpb):
     offspring = [toolbox.clone(ind) for ind in population]
@@ -67,26 +97,26 @@ def eaSimple(population, toolbox, cxpb, mutpb, ngen):
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = fit
         population[:] = offspring
-        print(tools.selBest(population,1))
+        bestInd = tools.selBest(population, 1)[0]
+        bestFit = bestInd.fitness.values
+        print(gen, bestFit, bestInd)
+        if ANIMATE:
+            plot_route(gen, bestInd)
 
-    return population
+random.seed(1)
+cities = generate_cities( NUM_CITIES )
+pop = toolbox.population(n=100)
+eaSimple(pop, toolbox, cxpb = 0.8, mutpb=0.2, ngen=NGEN)
 
-def main():
-    random.seed(169)
+best_ind = tools.selBest(pop, 1)[0]
+print("Best individual is %s" % (best_ind))
+print(evalSalesman(best_ind))
 
-    pop = toolbox.population(n=300)
-
-    hof = tools.HallOfFame(1)
-    stats = tools.Statistics(lambda ind: ind.fitness.values)
-    stats.register("avg", numpy.mean)
-    stats.register("std", numpy.std)
-    stats.register("min", numpy.min)
-    stats.register("max", numpy.max)
-    
-    eaSimple(pop, toolbox, 0.7, 0.2, 40)
-    
-    return pop, stats, hof
-
-if __name__ == "__main__":
-    main()
-
+if not ANIMATE:
+    px, py, pn = generate_px_py_pn(best_ind)
+    plt.xlim(0, RANGE)
+    plt.ylim(0, RANGE)
+    plt.grid(True)
+    plt.plot(px, py, marker="o", color='k', markersize=3,linestyle='None')
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.show()
