@@ -53,13 +53,15 @@ def mutSet(individual):
     return individual,
 
 toolbox.register("evaluate", evalKnapsack)
-toolbox.register("mate", cxSet)
+# toolbox.register("mate", cxSet)
+toolbox.register("mate", tools.cxTwoPoint)
 toolbox.register("mutate", mutSet)
 toolbox.register("select", tools.selNSGA2)
 
 def main():
     random.seed(64)
-    NGEN = 50
+    # NGEN = 50
+    NGEN = 200
     MU = 50
     LAMBDA = 100
     CXPB = 0.7
@@ -68,9 +70,9 @@ def main():
     pop = toolbox.population(n=MU)
     hof = tools.ParetoFront()
     stats = tools.Statistics(lambda ind: ind.fitness.values)
-    stats.register("avg", numpy.mean, axis=0)
-    stats.register("std", numpy.std, axis=0)
-    stats.register("min", numpy.min, axis=0)
+    # stats.register("avg", numpy.mean, axis=0)
+    # stats.register("std", numpy.std, axis=0)
+    # stats.register("min", numpy.min, axis=0)
     stats.register("max", numpy.max, axis=0)
     
     algorithms.eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
