@@ -3,6 +3,7 @@ import numpy as np
 import random
 import math
 import matplotlib.pyplot as plt 
+import pdb
 
 from scipy.spatial import distance
 
@@ -43,6 +44,14 @@ toolbox.register( "mate", tools.cxOrdered )
 toolbox.register( "mutate", tools.mutShuffleIndexes, indpb=0.05 )
 toolbox.register("select", tools.selTournament, tournsize=3)
 
+x = [0]
+y = [0]
+fig, ax = plt.subplots(1,2,figsize=(12,6))
+def generate_x_y(gen, ind):
+    x.append(gen)
+    y.append(ind.fitness.values[0])
+    return x,y 
+
 def generate_px_py_pn(ind):
     d = 0
     px, py, pn = [], [], []
@@ -54,20 +63,26 @@ def generate_px_py_pn(ind):
         px += [list(cities)[n1][0]]
         py += [list(cities)[n1][1]]
         pn += [n1]
-        plt.annotate(n1, xy=(list(cities)[n1][0], list(cities)[n1][1]),fontsize=18)
-        plt.annotate('', xy=(list(cities)[n1][0], list(cities)[n1][1]),xytext=(list(cities)[n2][0], list(cities)[n2][1]),
+        ax[0].annotate(n1, xy=(list(cities)[n1][0], list(cities)[n1][1]),fontsize=18)
+        ax[0].annotate('', xy=(list(cities)[n1][0], list(cities)[n1][1]),xytext=(list(cities)[n2][0], list(cities)[n2][1]),
                      arrowprops=dict(arrowstyle='-|>', connectionstyle='arc3',facecolor='gray', edgecolor='gray'))
     return px, py, pn
 
 def plot_route(gen,ind):
-    plt.subplots(figsize=(6, 6))
-    plt.xlim(0, RANGE)
-    plt.ylim(0, RANGE)
-    plt.grid(True)
-    plt.text(0, 0, 'iter={}'.format(gen), fontsize=12)
-    lines, = plt.plot(0, 0, marker='o', color='k', markersize=3, linestyle='None')
+    ax[0].cla()
+    ax[0].set_xlim(0, RANGE)
+    ax[0].set_ylim(0, RANGE)
+    ax[0].grid(True)
+    ax[0].text(0, 0, 'iter={}'.format(gen), fontsize=12)
+    lines1, = ax[0].plot(0, 0, marker='o', color='k', markersize=3, linestyle='None')
+    lines2, = ax[1].plot(0, 0, color='k',linestyle='-')
     px, py, pn = generate_px_py_pn(ind)
-    lines.set_data(px, py)
+    lines1.set_data(px, py)
+
+    x, y = generate_x_y(gen, ind)
+    lines2.set_data(x, y)
+    ax[1].set_xlim((min(x), max(x)))
+    ax[1].set_ylim((min(y), max(y)))
     plt.pause(0.01)
 
 def varAnd(population, toolbox, cxpb, mutpb):
