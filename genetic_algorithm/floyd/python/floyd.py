@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from variables import GEN_MAX
 from population import Population
 
-#ANIMATE = False
-ANIMATE = True 
+ANIMATE = False
+#ANIMATE = True 
 
 
 if __name__=="__main__":
