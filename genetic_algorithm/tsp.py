@@ -1,7 +1,8 @@
-from deap import base, creator, tools, algorithms
+from deap import base, creator, tools
 import numpy as np
 import random
 import math
+import matplotlib.pyplot as plt 
 
 from scipy.spatial import distance
 
@@ -58,8 +59,6 @@ def generate_px_py_pn(ind):
                      arrowprops=dict(arrowstyle='-|>', connectionstyle='arc3',facecolor='gray', edgecolor='gray'))
     return px, py, pn
 
-
-import matplotlib.pyplot as plt 
 def plot_route(gen,ind):
     plt.subplots(figsize=(6, 6))
     plt.xlim(0, RANGE)
@@ -107,7 +106,6 @@ random.seed(1)
 cities = generate_cities( NUM_CITIES )
 pop = toolbox.population(n=100)
 eaSimple(pop, toolbox, cxpb = 0.8, mutpb=0.2, ngen=NGEN)
-
 best_ind = tools.selBest(pop, 1)[0]
 print("Best individual is %s" % (best_ind))
 print(evalSalesman(best_ind))
