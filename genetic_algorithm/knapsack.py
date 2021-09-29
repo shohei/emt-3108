@@ -53,8 +53,7 @@ def mutSet(individual):
     return individual,
 
 toolbox.register("evaluate", evalKnapsack)
-# toolbox.register("mate", cxSet)
-toolbox.register("mate", tools.cxTwoPoint)
+toolbox.register("mate", cxSet)
 toolbox.register("mutate", mutSet)
 toolbox.register("select", tools.selNSGA2)
 
