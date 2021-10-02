@@ -17,7 +17,6 @@ tip.view()
 rule1 = ctrl.Rule(quality['poor'] | service['poor'], tip['low'])
 rule2 = ctrl.Rule(service['average'], tip['medium'])
 rule3 = ctrl.Rule(service['good'] | quality['good'], tip['high'])
-rule1.view()
 tipping_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
 tipping = ctrl.ControlSystemSimulation(tipping_ctrl)
 tipping.input['quality'] = 6.5
