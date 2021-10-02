@@ -11,7 +11,7 @@ from scipy.spatial import distance
 ANIMATE = True 
 
 if ANIMATE:
-    NUM_CITIES  = 20 
+    NUM_CITIES  = 100 
     NGEN = 200
 else:
     NUM_CITIES  = 6 
