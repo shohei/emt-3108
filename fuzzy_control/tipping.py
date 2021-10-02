@@ -2,6 +2,23 @@ import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+
+def gensurf(fis):
+    xs = np.arange(0,11,1)
+    ys = np.arange(0,11,1)
+    X, Y = np.meshgrid(xs,ys)
+    Z = X.copy()
+    for i in range(X.shape[0]):
+        for j in range(X.shape[1]):
+            x = X[i,j]
+            y = Y[i,j]
+            fis.input['quality'] = x 
+            fis.input['service'] = y
+            fis.compute()
+            Z[i,j] = fis.output['tip']
+    return X,Y,Z
 
 quality = ctrl.Antecedent(np.arange(0, 11, 1), 'quality')
 service = ctrl.Antecedent(np.arange(0, 11, 1), 'service')
@@ -24,4 +41,10 @@ tipping.input['service'] = 9.8
 tipping.compute()
 print(tipping.output['tip'])
 tip.view(sim=tipping)
+
+X,Y,Z = gensurf(tipping)
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+surf = ax.plot_surface(X,Y,Z,cmap=cm.gist_rainbow)
+
 plt.show()
