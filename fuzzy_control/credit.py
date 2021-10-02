@@ -23,6 +23,12 @@ rule3 = ctrl.Rule(credit['high'] , risk['low'])
 risk_assessment_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
 risk_assessment = ctrl.ControlSystemSimulation(risk_assessment_ctrl)
 
+risk_assessment.input['credit'] = 600 
+risk_assessment.compute()
+risk_result = risk_assessment.output['risk']
+print(risk_result)
+risk.view(sim=risk_assessment)
+
 surf = []
 credits = np.arange(300, 850, 50)
 for c in credits: 
@@ -31,5 +37,4 @@ for c in credits:
     surf.append(risk_assessment.output['risk'])
 plt.figure('Surface')
 plt.plot(credits,surf)
-# risk.view(sim=risk_assessment)
 plt.show()
