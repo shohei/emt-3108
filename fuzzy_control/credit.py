@@ -23,6 +23,7 @@ rule3 = ctrl.Rule(credit['high'] , risk['low'])
 risk_assessment_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
 risk_assessment = ctrl.ControlSystemSimulation(risk_assessment_ctrl)
 
+# risk_assessment.input['credit'] = 700 
 risk_assessment.input['credit'] = 600 
 risk_assessment.compute()
 risk_result = risk_assessment.output['risk']
