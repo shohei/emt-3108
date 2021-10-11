@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pdb
+import random
 
 def meshtruss(p1,p2,nx,ny): 
     nodes = []
@@ -43,9 +44,24 @@ F = loads
 free = np.ones_like(coord).astype('int')
 free[::7,:]=0
 freenode = free
-V0 = 0.1
+# V0 = 0.1
+V0 = 5 
 
-def fobj(x):
+def volume(x):
+    return (x * l).sum(), l
+
+xmin = 1e-6 * np.ones(n) 
+xmax = 1e-2 * np.ones(n)
+totalvolume = volume(xmax)[0]
+
+def evalTruss(x):
+    for xi in x:
+        if xi<0:
+            return 0,
+    current_volume  = volume(x)[0]
+    if current_volume > V0:
+        return 0,
+
     D = E * x/l
     kx = e * D
     K = np.zeros((2*m, 2*m))
@@ -58,31 +74,81 @@ def fobj(x):
     block = freenode.flatten().nonzero()[0] 
     matrix = K[np.ix_(block,block)]
     rhs = F.flatten()[block]
-    solution = np.linalg.solve(matrix,rhs) 
+    try:
+        solution = np.linalg.solve(matrix,rhs) 
+    except Exception:
+        return 0,
     u = freenode.astype('float').flatten() 
     u[block] = solution
     U = u.reshape(m,2)
     axial = ((U[connec[:,1],:] - U[connec[:,0],:]) * kx.T).sum(axis =1)
     stress = axial / x
     cost = (U * F).sum()
-    dcost = -stress**2 / E * l 
-    return cost, dcost, U, stress
+    obj = 1/cost
+    # dcost = -stress**2 / E * l 
+    # return cost, dcost, U, stress
+    return obj,stress,U
 
-def volume(x):
-    return (x * l).sum(), l
+T = 100 
+N = 20 
+x = 1e-6*np.ones((N,n))
+# x = np.random.rand(N,n)
+v = np.random.rand(N,n)
+# g = 1e-4*np.ones(n)
+# p = 1e-4*np.ones((N,n))
+g = np.zeros(n)
+p = np.zeros((N,n))
+w = 0.8 
+c1 = 1
+c2 = 1 
 
-xmin = 1e-6 * np.ones(n) 
-xmax = 1e-2 * np.ones(n)
-f = lambda x: fobj(x)[0]
-derf = lambda x: fobj(x)[1]
-totalvolume = volume(xmax)[0]
-constr = lambda x: 1./totalvolume * volume(x)[0] - V0 
-dconstr= lambda x: 1./totalvolume * volume(x)[1]
-x0 = 1e-4*np.ones(n)
+gs = []
+for gen in range(T):
+    for i in range(N):
+        for j in range(n):
+            vj = w*v[i,j] + random.random()*c1*(p[i,j]-x[i,j])+random.random()*c2*(g[j]-x[i,j])
+            xj = x[i,j] + vj
+            x[i,j] = xj.copy()
+            v[i,j] = vj.copy()
+        val_xi = evalTruss(x[i])[0]
+        val_pi = evalTruss(p[i])[0]
+        val_g = evalTruss(g)[0]
+        if val_xi > val_pi:
+            p[i] = x[i].copy()
+        if val_xi > val_g:
+            g = x[i].copy()
+    print(val_g,g)
+    gs.append(val_g)
+plt.plot(gs)
 
-pdb.set_trace()
-# problem = NLP(f,x0,df=derf,c=constr,dc=dconstr, lb=xmin, ub=xmax, name='Truss', iprint=100)
-# result = problem.solve("mma")
+# plotdisp = True
+plotdisp = False 
+def drawTruss(x,factor=3, wdt=5e2): 
+    _,stress,U = evalTruss(x)
+    newcoor = coord + factor*U
+    if plotdisp:
+        fig = plt.figure(figsize=(12,6)) 
+        ax = fig.add_subplot(121)
+        bx = fig.add_subplot(122)
+    else:
+        fig = plt.figure()
+        ax = fig.add_subplot(111) 
+    for i in range(n):
+        bar1 = np.concatenate( (coord[connec[i,0],:][np.newaxis],
+        coord[connec[i,1],:][np.newaxis]),axis=0 )
+        bar2 = np.concatenate( (newcoor[connec[i,0],:][np.newaxis],newcoor[connec[i,1],:][np.newaxis]),axis=0) 
+    if stress[i] > 0:
+        clr = 'r'
+    else:
+        clr = 'b'
+    ax.plot(bar1[:,0],bar1[:,1], color = clr, linewidth = wdt * x [i])
+    ax.axis('equal')
+    ax.set_title('Stress') 
+    if plotdisp:
+        bx.plot(bar1[:,0],bar1[:,1], 'r:') 
+        bx.plot(bar2[:,0],bar2[:,1], color = 'k', linewidth= wdt* x[i]) 
+        bx.axis('equal')
 
+drawTruss(g)
 
-
+plt.show()
