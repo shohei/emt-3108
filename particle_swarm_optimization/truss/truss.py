@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pdb
 import random
+import cProfile
+import scipy
 
 def meshtruss(p1,p2,nx,ny): 
     nodes = []
@@ -40,12 +42,14 @@ E0=1e+7
 E = E0*np.ones(connec.shape[0])
 loads = np.zeros_like(coord)
 loads[20,1] = -100.
+# loads[20,1] = -1000000.
+# loads[6,1] = -100.
 F = loads
 free = np.ones_like(coord).astype('int')
 free[::7,:]=0
 freenode = free
-# V0 = 0.1
-V0 = 5 
+V0 = 5
+xinit = 1e-4
 
 def volume(x):
     return (x * l).sum(), l
@@ -54,7 +58,10 @@ xmin = 1e-6 * np.ones(n)
 xmax = 1e-2 * np.ones(n)
 totalvolume = volume(xmax)[0]
 
-def evalTruss(x):
+def is_invertible(a):
+    return a.shape[0] == a.shape[1] and np.linalg.matrix_rank(a) == a.shape[0]
+
+def evalTruss(x,calc_stress=False):
     for xi in x:
         if xi<0:
             return 0,
@@ -74,33 +81,41 @@ def evalTruss(x):
     block = freenode.flatten().nonzero()[0] 
     matrix = K[np.ix_(block,block)]
     rhs = F.flatten()[block]
-    try:
+    if is_invertible(matrix):
         solution = np.linalg.solve(matrix,rhs) 
-    except Exception:
+    else:
         return 0,
     u = freenode.astype('float').flatten() 
     u[block] = solution
     U = u.reshape(m,2)
-    axial = ((U[connec[:,1],:] - U[connec[:,0],:]) * kx.T).sum(axis =1)
-    stress = axial / x
     cost = (U * F).sum()
     obj = 1/cost
+    if calc_stress:
+        axial = ((U[connec[:,1],:] - U[connec[:,0],:]) * kx.T).sum(axis =1)
+        stress = axial / x
+        return obj,stress,U
+    else:
+        return obj,
     # dcost = -stress**2 / E * l 
     # return cost, dcost, U, stress
-    return obj,stress,U
 
 T = 100 
 N = 20 
-x = 1e-6*np.ones((N,n))
-# x = np.random.rand(N,n)
+x = xinit*np.ones((N,n))
 v = np.random.rand(N,n)
-# g = 1e-4*np.ones(n)
-# p = 1e-4*np.ones((N,n))
 g = np.zeros(n)
 p = np.zeros((N,n))
-w = 0.8 
-c1 = 1
+w = 0.5
+c1 = 1 
 c2 = 1 
+
+def clip(x,thresh,val=0):
+    tmp = x.copy()
+    for i in range(len(tmp)):
+        if tmp[i]<thresh:
+            # tmp[i]=1e-4
+            tmp[i]=val
+    return tmp 
 
 gs = []
 for gen in range(T):
@@ -117,14 +132,15 @@ for gen in range(T):
             p[i] = x[i].copy()
         if val_xi > val_g:
             g = x[i].copy()
-    print(val_g,g)
+    print(gen,val_g)
     gs.append(val_g)
 plt.plot(gs)
 
-# plotdisp = True
-plotdisp = False 
-def drawTruss(x,factor=3, wdt=5e2): 
-    _,stress,U = evalTruss(x)
+plotdisp = True
+# plotdisp = False 
+def drawTruss(x,factor=1, wdt=10): 
+    print(x)
+    _,stress,U = evalTruss(x,calc_stress=True)
     newcoor = coord + factor*U
     if plotdisp:
         fig = plt.figure(figsize=(12,6)) 
@@ -134,21 +150,27 @@ def drawTruss(x,factor=3, wdt=5e2):
         fig = plt.figure()
         ax = fig.add_subplot(111) 
     for i in range(n):
-        bar1 = np.concatenate( (coord[connec[i,0],:][np.newaxis],
-        coord[connec[i,1],:][np.newaxis]),axis=0 )
+        bar1 = np.concatenate( (coord[connec[i,0],:][np.newaxis],coord[connec[i,1],:][np.newaxis]),axis=0 )
         bar2 = np.concatenate( (newcoor[connec[i,0],:][np.newaxis],newcoor[connec[i,1],:][np.newaxis]),axis=0) 
-    if stress[i] > 0:
-        clr = 'r'
-    else:
-        clr = 'b'
-    ax.plot(bar1[:,0],bar1[:,1], color = clr, linewidth = wdt * x [i])
-    ax.axis('equal')
-    ax.set_title('Stress') 
-    if plotdisp:
-        bx.plot(bar1[:,0],bar1[:,1], 'r:') 
-        bx.plot(bar2[:,0],bar2[:,1], color = 'k', linewidth= wdt* x[i]) 
-        bx.axis('equal')
+        if stress[i] > 0:
+            clr = 'r'
+        else:
+            clr = 'b'
+        ax.plot(bar1[:,0],bar1[:,1], color = clr, linewidth = wdt * x [i])
+        ax.axis('equal')
+        ax.set_title('Stress') 
+        if plotdisp:
+            bx.plot(bar1[:,0],bar1[:,1], 'r:') 
+            bx.plot(bar2[:,0],bar2[:,1], color = 'k', linewidth= wdt* x[i]) 
+            bx.axis('equal')
 
-drawTruss(g)
+# pdb.set_trace()
+# g2 = clip(g,0.1,0)
+# g2 = clip(g,0.1,0)
+# g2 = clip(g,0.1,0)
+# g2 = clip(g,0.1,0)
+wdt = max(g)/0.5
+print(wdt)
+drawTruss(g,wdt=wdt)
 
 plt.show()
