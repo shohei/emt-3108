@@ -4,7 +4,6 @@ from deap import base
 from deap import creator
 from deap import tools
 import matplotlib.pyplot as plt
-import pdb
 
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 creator.create("Particle", list, fitness=creator.FitnessMax, speed=list, 

@@ -1,6 +1,5 @@
 import numpy as np
 import random
-import pdb
 import matplotlib.pyplot as plt
 
 T = 100
@@ -11,7 +10,7 @@ x = np.random.rand(N,N_bit)
 v = np.random.rand(N,N_bit)
 g = np.zeros(N_bit)
 p = np.zeros((N,N_bit))
-w = 0.8 
+w = 0.8
 c1 = 1
 c2 = 1
 
@@ -25,7 +24,9 @@ gs = []
 for gen in range(T):
     for i in range(N):
         for j in range(N_bit):
-            vj = w*v[i,j] + random.random()*c1*(p[i,j]-x[i,j])+random.random()*c2*(g[j]-x[i,j])
+            vj = w*v[i,j] \
+                 +random.random()*c1*(p[i,j]-x[i,j]) \
+                 +random.random()*c2*(g[j]-x[i,j])
             xj = x[i,j] + vj
             x[i,j] = xj.copy()
             v[i,j] = vj.copy()
