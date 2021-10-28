@@ -1,7 +1,7 @@
 NONE = 0
 SUCCESS = 10
 
-def cheese_machine(s,a):
+def advance_state(s,a):
     # Add your code below
 
     return reward, s2
@@ -12,7 +12,7 @@ if __name__=="__main__":
         s = s_a_s2[0] # s_{t}
         a = s_a_s2[1] # a_{t}
         s2 = s_a_s2[2] # s_{t+1}
-        reward, s2 = cheese_machine(s,a)
+        reward, s2 = advance_state(s,a)
         print(f"s={s},s2={s2},a={a},reward={reward}")
 
 # Expected result
