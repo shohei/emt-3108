@@ -13,18 +13,14 @@ G = [[Edge(1,3),Edge(2,5)],
 
 INF = 9999
 N = len(G)
-
-def chmin(a,b):
-    if a<=b:
-        return a 
-    else:
-        return b 
+prev_nodes = [-1]*N
 
 used = [False]*N
 dist = [INF]*N
-s = 0
-dist[s] = 0
-for i in range(N):
+start = 0
+dist[start] = 0
+prev_nodes[start]=-1
+for _ in range(N):
     min_dist = INF
     min_v = -1
     for v in range(N):
@@ -36,14 +32,25 @@ for i in range(N):
         break
 
     for edge in G[min_v]:
-        dist[edge.to] = chmin(dist[edge.to], dist[min_v]+edge.w)
+        if dist[edge.to] > dist[min_v]+edge.w:
+            dist[edge.to] = dist[min_v]+edge.w
+            prev_nodes[edge.to] = min_v
     
     used[min_v] = True
 
+def get_optimal_path(v):
+    prev_node = v
+    path = []
+    while prev_node!=-1:
+        path.append(prev_node)
+        prev_node = prev_nodes[prev_node]
+    path.reverse()
+    return path
+
 for v in range(N):
     if dist[v] < INF:
-        print(dist[v])
+        print(f"Shortest path for {start}->{v}")
+        print(f"  length:{dist[v]}")
+        print(f"  path:{get_optimal_path(v)}")
     else:
-        print("INF")
-
-
+        print(f"Shortest path length {start}->{v}: not found")
