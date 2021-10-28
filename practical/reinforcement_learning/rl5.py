@@ -18,7 +18,7 @@ if __name__=="__main__":
         while True:
             a = epsilon_greedy(epsilon, s, num_a, Qtable)
             reward, s2 = advance_state(s,a)
-            Q_max, _ = max_Qval(s2, Qtable)
+            Q_max = max_Qval(s2, Qtable)
             Qtable[s][a] = (1-alpha)*Qtable[s][a] + alpha*(reward+gamma*Q_max)
             s = s2
             if reward>0:

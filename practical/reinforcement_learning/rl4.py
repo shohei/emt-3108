@@ -1,5 +1,4 @@
 import numpy as np
-import random
 
 from rl3 import select_action
 

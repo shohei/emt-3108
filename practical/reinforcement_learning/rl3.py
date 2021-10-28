@@ -1,5 +1,4 @@
 import numpy as np
-import random
 
 def select_action(s, Qtable):
     # Add your code

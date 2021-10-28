@@ -3,7 +3,7 @@ import numpy as np
 def max_Qval(s, Qtable):
     # Add your code below
 
-    return maxQ, max_as 
+    return maxQ
 
 if __name__=="__main__":
     num_s = 5
