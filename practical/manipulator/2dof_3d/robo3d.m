@@ -8,7 +8,11 @@ plt(1)=plot3(xy(1,:),xy(2,:),xy(3,:),'o-','linewidth',3);
 hold on
 plt(2)=plot3(xyg(1,:),xyg(2,:),xyg(3,:),'ro','markersize',5);
 hold off
-axis equal;grid;xlabel('x');ylabel('y');zlabel('z');
+axis equal;
+grid;
+xlabel('x');
+ylabel('y');
+zlabel('z');
 axis([-5,5,-5,5,0,10]);
 view(viewagl);
 ui1=uicontrol(1,'style','slider','max',pi/2,'min',-pi/2,'value',0);
