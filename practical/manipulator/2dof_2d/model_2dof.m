@@ -1,18 +1,10 @@
-T01=[cos(th1),-sin(th1),l1;
-     sin(th1),cos(th1),0;
-     0,0,1];
-T12=[cos(th2),-sin(th2),l2;
-    sin(th2),cos(th2),0;
-    0,0,1];
-T23=[1,0,l3;
-    0,1,0;
-    0,0,1];
-xy0=[1,0,0;
-    0,1,0]*T01*[0;0;1];
-T02=T01*T12;
-xy1=[1,0,0;
-     0,1,0]*T02*[0;0;1];
-T03=T01*T12*T23;
-xy2=[1,0,0;
-    0,1,0]*T03*[0;0;1];
-xy=[[0;0],xy0,xy1,xy2];
+% todo: complete the robot model for 2-dimensional 2DOF manipulator
+T01=;
+T12=;
+T23=;
+xy0=;
+T02=;
+xy1=;
+T03=;
+xy2=;
+xy=;
