@@ -1,6 +1,6 @@
 close all; clear all;
 l1=2;l2=2;l3=3;th1=0;th2=0;
-model_2dof;
+model_2dof_2d;
 plot(xy(1,:),xy(2,:),'o-','linewidth',5);
 axis equal; 
 axis([-10,10,-10,10]);
