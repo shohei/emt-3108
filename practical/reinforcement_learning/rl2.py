@@ -16,4 +16,4 @@ if __name__=="__main__":
     print(f"max Q={maxQ}")
 
 # Expected result
-# max Q=9.0, actions=[2]
+# max Q=9.0
