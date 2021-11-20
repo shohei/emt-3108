@@ -12,8 +12,8 @@ if __name__=="__main__":
     
     Qtable[3][2] = 9
     Qtable[3][4] = 6 
-    maxQ, max_as = max_Qval(3, Qtable)
-    print(f"max Q={maxQ}, actions={max_as}")
+    maxQ = max_Qval(3, Qtable)
+    print(f"max Q={maxQ}")
 
 # Expected result
 # max Q=9.0, actions=[2]
