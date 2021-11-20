@@ -8,8 +8,8 @@ def epsilon_greedy(epsilon, s, num_a, Qtable):
     return a 
 
 if __name__=="__main__":
-    num_a = 5
     num_s = 10
+    num_a = 5
     Qtable = np.zeros((num_s,num_a))
 
     Qtable[3][1] = 9
